@@ -1,0 +1,64 @@
+<background>
+	<starttime>
+		<year>2023</year>
+		<month>8</month>
+		<day>4</day>
+		<hour>0</hour>
+		<minute>0</minute>
+		<second>0</second>
+	</starttime>
+	<static>
+		<duration>1</duration>
+		<file>/home/vardan/Downloads/ok/0.png</file>
+	</static>
+	<transition type="overlay">
+		<duration>25199</duration>
+		<from>/home/vardan/Downloads/ok/0.png</from>
+		<to>/home/vardan/Downloads/ok/1.png</to>
+	</transition>
+	<static>
+		<duration>1</duration>
+		<file>/home/vardan/Downloads/ok/1.png</file>
+	</static>
+	<transition type="overlay">
+		<duration>9599.002</duration>
+		<from>/home/vardan/Downloads/ok/1.png</from>
+		<to>/home/vardan/Downloads/ok/2.png</to>
+	</transition>
+	<static>
+		<duration>1</duration>
+		<file>/home/vardan/Downloads/ok/2.png</file>
+	</static>
+	<transition type="overlay">
+		<duration>19198.998</duration>
+		<from>/home/vardan/Downloads/ok/2.png</from>
+		<to>/home/vardan/Downloads/ok/3.png</to>
+	</transition>
+	<static>
+		<duration>1</duration>
+		<file>/home/vardan/Downloads/ok/3.png</file>
+	</static>
+	<transition type="overlay">
+		<duration>17998.998</duration>
+		<from>/home/vardan/Downloads/ok/3.png</from>
+		<to>/home/vardan/Downloads/ok/4.png</to>
+	</transition>
+	<static>
+		<duration>1</duration>
+		<file>/home/vardan/Downloads/ok/4.png</file>
+	</static>
+	<transition type="overlay">
+		<duration>7199.0034</duration>
+		<from>/home/vardan/Downloads/ok/4.png</from>
+		<to>/home/vardan/Downloads/ok/5.png</to>
+	</transition>
+	<static>
+		<duration>1</duration>
+		<file>/home/vardan/Downloads/ok/5.png</file>
+	</static>
+	<transition type="overlay">
+		<duration>7199</duration>
+		<from>/home/vardan/Downloads/ok/5.png</from>
+		<to>/home/vardan/Downloads/ok/0.png</to>
+	</transition>
+</background>
