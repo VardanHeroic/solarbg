@@ -57,13 +57,13 @@ async function sun() {
 	let altitude = SunCalc.getPosition(new Date(),process.argv[4],process.argv[5]).altitude * (180/Math.PI)
 	console.log(altitude,currentpath);
 	themeJSON.forEach(async element => {
-		if (altitude < 0) {
-			await setWallpaper(themeJSON[0])
-		}
-		else if(element.start < altitude && altitude < element.end && (solarTime.solarNoon < new Date() ) === element.time && currentpath !== element.path ){
+		if (element.end === element.start && altitude < element.end && currentpath !== element.path && (solarTime.nadir > new Date() ) === element.afternoon  ) {
 			currentpath = element.path
 			await setWallpaper(process.argv[3] + '/' + element.path)
-			console.log(909);
+		}
+		else if(element.start < altitude && altitude < element.end && (solarTime.solarNoon < new Date() ) === element.afternoon && currentpath !== element.path ){
+			currentpath = element.path
+			await setWallpaper(process.argv[3] + '/' + element.path)
 		}
 	})
 	

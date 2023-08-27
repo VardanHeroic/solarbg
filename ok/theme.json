@@ -1,40 +1,46 @@
 [
 	{
 		"path": "0.png",
-		"start": 0,
-		"end": 0,
-		"time": false
+		"start": -5,
+		"end": -5,
+		"afternoon": false
 	},
 	{
 		"path": "1.png",
 		"start": 0,
 		"end": 20,
-		"time": false
+		"afternoon": false
 	},
 	{
 		"path": "2.png",
 		"start": 20,
 		"end": 40,
-		"time": false
+		"afternoon": false
 
 	},
 	{
 		"path": "3.png",
 		"start": 40,
 		"end": 90,
-		"time": false
+		"afternoon": false
 	},
 	
 	{
 		"path": "3.png",
 		"start": 20,
 		"end": 90,
-		"time": true
+		"afternoon": true
 	},
 	{
 		"path": "4.png",
 		"start": 0,
 		"end": 20,
-		"time": true
+		"afternoon": true
+	},
+	{
+		"path": "3.png",
+		"start": -5,
+		"end": -5,
+		"afternoon": true
 	}
 ]
