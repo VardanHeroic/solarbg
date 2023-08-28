@@ -1,9 +1,11 @@
 import {readFile} from 'fs';
 import Moment from 'moment';
 import SunCalc from 'suncalc';
-import { setWallpaper } from 'wallpaper';
+import { getWallpaper, setWallpaper } from 'wallpaper';
 import xml2js from 'xml2js';
 import Moment_range from 'moment-range';
+import {homedir} from 'os';
+
 
 
 let themeJSON = {}
@@ -38,6 +40,7 @@ function findRange(xml) {
 
 if (process.argv[2] === 'gnome') {
 	let parser = new xml2js.Parser();
+
 	readFile('ok/Desert Sands by Louis Coyle.xml',(err,data) => {
 		parser.parseString(data,(err, result) => {
 			console.log('Done');
@@ -47,7 +50,7 @@ if (process.argv[2] === 'gnome') {
 }
 
 if (process.argv[2] === 'sun'){
-	import('./' + process.argv[3] + '/theme.json',{ assert: { type: "json" } })
+	import(homedir() + '/.local/share/solarbg/themes/' + process.argv[3] + '/theme.json',{ assert: { type: "json" } })
 		.then(module => themeJSON = module.default)
 	setInterval(sun,1000);
 }
@@ -55,7 +58,7 @@ if (process.argv[2] === 'sun'){
 async function sun() {
 	let solarTime = SunCalc.getTimes(new Date(), process.argv[4], process.argv[5])
 	let altitude = SunCalc.getPosition(new Date(),process.argv[4],process.argv[5]).altitude * (180/Math.PI)
-	console.log(altitude,currentpath);
+	console.log(altitude,process.argv[3] + '/' + currentpath);
 	themeJSON.forEach(async element => {
 		if (element.end === element.start && altitude < element.end && currentpath !== element.path && (solarTime.nadir > new Date() ) === element.afternoon  ) {
 			currentpath = element.path
@@ -71,10 +74,9 @@ async function sun() {
 }
 
 async function changeBG () {
-    sysdate = new Date();
     pointArr.forEach(async (element,index) => {
         let range = moment.range(element[0],element[1]);
-        if (range.contains(sysdate)) {
+        if (range.contains(new Date() )) {
 			let path =`ok/${(index).toString()}.png`;
             if(currentpath != path){
 				currentpath = path;
