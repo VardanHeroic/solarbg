@@ -1,0 +1,38 @@
+#!/bin/bash
+location=''
+theme=''
+mode=''
+
+help (){
+	echo 'usage: solarbg [options]'
+	echo 'options:'
+	echo '  -m				Wallpaper type(sun,gnome)'
+	echo '  -l LAT:LON		        Your location(needed for sun mode)'
+	echo '  -t				Theme name(theme path is ~/.local/share/solarbg/themes)'
+	echo '  -h				Show this message'
+	echo ''
+	exit
+}
+
+while getopts "m:l:t:h" flag;do
+	case $flag in
+		"l") location=(${OPTARG//:/ })
+		;;
+		"m") 
+			mode=$OPTARG
+		;;
+	    "t") 
+			theme=$OPTARG 
+		;;
+		"h")
+			help
+		;;
+    esac	
+done
+
+if  ( [ ! ${#location[@]} -eq 2 ] && [ $mode = 'sun' ] ) || ( [ $mode != 'gnome' ] && [ $mode != 'sun' ] ) || [ $theme = '' ]
+then
+	help
+fi
+
+node /usr/lib/solarbg/index.js $mode $theme $((location[0])) $((location[1]))
