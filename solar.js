@@ -1,12 +1,13 @@
-import {themePath} from './index.js'
+import { themePath } from './index.js'
 import SunCalc from 'suncalc';
 import { setWallpaper } from 'wallpaper';
+import { platform } from 'os'
 
 export default function solar() {
 	let themeJSON = {}
 	let currentpath = null
-
-	import(themePath + '/theme.json',{ assert: { type: "json" } })
+	
+	import( (platform == 'win32' ? 'file:\\' : '') + themePath + (platform == 'win32' ? '\\theme.json' : '/theme.json') ,{ assert: { type: "json" } })
 		.then(module => themeJSON = module.default)
 	changeBG()
 	setInterval(changeBG,1000);
@@ -14,10 +15,10 @@ export default function solar() {
 	async function changeBG() {
 		let solarTime = SunCalc.getTimes(new Date(), process.argv[4], process.argv[5])
 		let altitude = SunCalc.getPosition(new Date(),process.argv[4],process.argv[5]).altitude * (180/Math.PI)
-		console.log(altitude);
+		console.log(altitude,currentpath);
 		Object.keys(themeJSON).length && themeJSON.forEach(async element => {
 			let elementPath = themePath + '/' + element.path 
-			if (element.end === element.start && altitude < element.end && currentpath !== elementPath && (solarTime.nadir > new Date() ) === element.afternoon  ) {
+			if (element.end === element.start && altitude < element.end && currentpath !== elementPath ) {
 				currentpath = elementPath
 				await setWallpaper(themePath + '/' + element.path)
 			}

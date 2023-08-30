@@ -3,7 +3,7 @@ import Moment from 'moment';
 import { setWallpaper } from 'wallpaper';
 import xml2js from 'xml2js';
 import Moment_range from 'moment-range';
-import {themePath} from './index.js'
+import { themePath } from './index.js'
 
 export default function gnome() {
 	let moment = Moment_range.extendMoment(Moment);
@@ -48,6 +48,7 @@ export default function gnome() {
 			let range = moment.range(element[0],element[1]);
 			if (range.contains(new Date() ) && currentpath != element[2] ) {
 				currentpath = element[2];
+				console.log(element[2])
 				await setWallpaper(element[2]);	
 			}
 		});
