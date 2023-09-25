@@ -30,9 +30,10 @@ while getopts "m:l:t:h" flag;do
     esac	
 done
 
-if  ( [ ! ${#location[@]} -eq 2 ] && [ $mode = 'sun' ] ) || ( [ $mode != 'gnome' ] && [ $mode != 'sun' ] ) || [ $theme = '' ]
+if ( [ ! ${#location[@]} -eq 2 ] && [ $mode = 'sun' ] ) || ( [ $mode != 'gnome' ] && [ $mode != 'sun' ] ) || [ -z $theme ]
 then
 	help
 fi
 
-node /usr/lib/solarbg/index.js $mode $theme $((location[0])) $((location[1]))
+node --no-warnings /usr/lib/solarbg/index.js $mode $theme $((location[0])) $((location[1])) 
+

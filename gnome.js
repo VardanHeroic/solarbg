@@ -23,7 +23,7 @@ export default function gnome() {
 		if (remantSeconds / 10 < 1) {
 			remantSeconds = '0' + remantSeconds;
 		}
-		console.log(' ' +  hours + ':' + minutes + ':' + remantSeconds);	
+
 		return (' ' +  hours + ':' + minutes + ':' + remantSeconds);
 	}
 
@@ -38,7 +38,6 @@ export default function gnome() {
 
 	readFile(themePath + '.xml',(err,data) => {
 		parser.parseString(data,(err, result) => {
-			console.log('Done');
 			findRange(result);
 		});
 	});
@@ -48,8 +47,8 @@ export default function gnome() {
 			let range = moment.range(element[0],element[1]);
 			if (range.contains(new Date() ) && currentpath != element[2] ) {
 				currentpath = element[2];
-				console.log(element[2])
 				await setWallpaper(element[2]);	
+				console.log(900);
 			}
 		});
 	}
