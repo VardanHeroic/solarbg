@@ -35,5 +35,5 @@ then
 	help
 fi
 
-node --no-warnings /usr/lib/solarbg/index.js $mode $theme $((location[0])) $((location[1])) 
+node --no-warnings /usr/lib/solarbg-git/index.js $mode $theme $((location[0])) $((location[1])) 
 
