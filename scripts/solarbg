@@ -30,7 +30,7 @@ while getopts "m:l:t:h" flag;do
     esac	
 done
 
-if ( [ ! ${#location[@]} -eq 2 ] && [ $mode = 'sun' ] ) || ( [ $mode != 'gnome' ] && [ $mode != 'sun' ] ) || [ -z $theme ]
+if ( [ ! ${#location[@]} -eq 2 ] && [ "$mode" = 'sun' ] ) || ( [ "$mode" != 'gnome' ] && [ "$mode" != 'sun' ] ) || [ -z $theme ]
 then
 	help
 fi

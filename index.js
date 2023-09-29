@@ -1,16 +1,16 @@
 import {homedir,platform} from 'os';
 import solar from './solar.js';
-import gnome from './gnome.js'
+import gnome from './gnome.js';
 
-let ospath = ''
-export let themePath ='' 
+let ospath = '';
+export let themePath ='' ;
 
 switch(platform()) {
 	case 'linux':
-		ospath = '/.local/share/solarbg/themes/'
+		ospath = '/.local/share/solarbg/themes/';
 		break;
 	case 'win32':
-		ospath = '\\AppData\\Roaming\\solarbg\\themes\\'
+		ospath = '\\AppData\\Roaming\\solarbg\\themes\\';
 		break;
 	default:
 		console.log('Your os is not supported');
@@ -18,13 +18,13 @@ switch(platform()) {
 }
 
 if (ospath !== '') {
-	themePath = homedir() + ospath + process.argv[3]
+	themePath = homedir() + ospath + process.argv[3];
 
 	if (process.argv[2] === 'gnome') {
-		gnome()
+		gnome();
 	}
 	if (process.argv[2] === 'sun'){
-		solar()	
+		solar();
 	}
 	
 }

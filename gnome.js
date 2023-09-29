@@ -43,12 +43,11 @@ export default function gnome() {
 	});
 
 	async function changeBG () {
-		pointArr.forEach(async (element,index) => {
+		pointArr.forEach(async (element) => {
 			let range = moment.range(element[0],element[1]);
 			if (range.contains(new Date() ) && currentpath != element[2] ) {
 				currentpath = element[2];
 				await setWallpaper(element[2]);	
-				console.log(900);
 			}
 		});
 	}

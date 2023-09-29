@@ -24,7 +24,6 @@ export default function solar() {
 			else if(element.start < altitude && altitude < element.end && (solarTime.solarNoon < new Date() ) === element.afternoon && currentpath !== elementPath ){
 				currentpath = elementPath;
 				console.log(await setWallpaper(themePath + '/' + element.path) );
-				console.log(900);
 			}
 		});
 	}
