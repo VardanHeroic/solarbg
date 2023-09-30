@@ -25,19 +25,10 @@ export default function solar() {
 		Object.keys(themeJSON).length && themeJSON.forEach(async element => {
 			let elementPath = themePath + '/' + element.path 
 			if (currentpath !== elementPath && isAfterNoon === element.afternoon) {		
-				if(element.afternoon === true){
-					if (element.start > altitude && altitude > element.end) {	
-						currentpath = elementPath;
-						console.log(currentpath, altitude);
-						await setWallpaper(themePath + '/' + element.path)
-					}
-				}
-				else if(element.afternoon === false) {
-					if (element.start < altitude && altitude < element.end) {
-						currentpath = elementPath;
-						console.log(currentpath, altitude);
-						await setWallpaper(themePath + '/' + element.path) 
-					}
+				if( (element.afternoon === true && element.start > altitude && altitude > element.end) || (element.afternoon === false && element.start < altitude && altitude < element.end)) {	
+					currentpath = elementPath;
+					console.log(currentpath, altitude);
+					await setWallpaper(themePath + '/' + element.path)	
 				}
 			}
 		});
