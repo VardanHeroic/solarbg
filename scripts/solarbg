@@ -6,7 +6,7 @@ mode=''
 help (){
 	echo 'usage: solarbg [options]'
 	echo 'options:'
-	echo '  -m				Wallpaper type(sun,gnome)'
+	echo '  -m				Wallpaper type(solar,gnome)'
 	echo '  -l LAT:LON		        Your location(needed for sun mode)'
 	echo '  -t				Theme name(theme path is ~/.local/share/solarbg/themes)'
 	echo '  -h				Show this message'
@@ -30,10 +30,10 @@ while getopts "m:l:t:h" flag;do
     esac	
 done
 
-if ( [ ! ${#location[@]} -eq 2 ] && [ "$mode" = 'sun' ] ) || ( [ "$mode" != 'gnome' ] && [ "$mode" != 'sun' ] ) || [ -z $theme ]
+if ( [ ! ${#location[@]} -eq 2 ] && [ "$mode" = 'solar' ] ) || ( [ "$mode" != 'gnome' ] && [ "$mode" != 'solar' ] ) || [ -z $theme ]
 then
 	help
 fi
 
-node --no-warnings /usr/lib/solarbg-git/index.js $mode $theme $((location[0])) $((location[1])) 
+node --no-warnings /usr/lib/solarbg-git/index.js $mode $theme $(echo "${location[0]}" | bc) $(echo "${location[1]}" | bc)
 

@@ -23,7 +23,7 @@ if (ospath !== '') {
 	if (process.argv[2] === 'gnome') {
 		gnome();
 	}
-	if (process.argv[2] === 'sun'){
+	if (process.argv[2] === 'solar'){
 		solar();
 	}
 	
