@@ -1,19 +1,24 @@
 {
 	"name": "solarbg",
-	"version": "1.2.0",
+	"version": "1.4.0",
+    "main": "index.js",
 	"scripts": {
-		"start": "node script.js"
+
 	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/VardanHeroic/solarbg.git"
 	},
+    "bin": {
+        "solarbg": "./index.js"
+    },
 	"type": "module",
 	"dependencies": {
 		"moment": "^2.29.4",
 		"moment-range": "^4.0.2",
 		"suncalc": "^1.9.0",
 		"wallpaper": "^7.1.0",
-		"xml2js": "^0.6.2"
+		"xml2js": "^0.6.2",
+		"yargs": "^17.7.2"
 	}
 }
