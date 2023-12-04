@@ -31,10 +31,11 @@ export let argv = yargs(hideBin(process.argv))
         if (argv.mode === 'solar' && !argv.location) {
             throw new Error('location is required when mode has the value "solar"');
         }
-        if (typeof argv.theme != 'string' || typeof argv.location != 'string') {
+        if (typeof argv.theme != 'string' || (typeof argv.location != 'string' && argv.location)) {
             throw new Error('theme and location arguments must be string');
         }
-        if (argv.location.split(':').filter(Boolean).length !== 2 || !argv.location.split(':').filter(Boolean).every(number => !isNaN(number))) {
+        console.log(argv.location);
+        if (argv.location && (argv.location.split(':').filter(Boolean).length !== 2 || !argv.location.split(':').filter(Boolean).every(number => !isNaN(number) ) )) {
             throw new Error('location must be writed in LAT:LON format');
         }
         return true;
