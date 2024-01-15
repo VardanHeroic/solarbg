@@ -1,11 +1,11 @@
-import { readFile } from 'fs';
+import { readFile } from 'fs/promises';
 import Moment from 'moment';
 import { setWallpaper } from 'wallpaper';
-import xml2js from 'xml2js';
+import xml2js, { parseStringPromise } from 'xml2js';
 import Moment_range from 'moment-range';
 import { themePath } from '../index.js'
 
-export default function gnome() {
+export default async function gnome() {
     let moment = Moment_range.extendMoment(Moment);
     let pointArr = [];
     let sysdate = new Date();
@@ -28,6 +28,9 @@ export default function gnome() {
     }
 
     function findRange(xml) {
+        if (!xml.background) {
+            throw new Error("xml file is not a gnome theme")
+        }
         xml.background.transition.reduce((acum, data) => {
             pointArr.push([new Date(date + secondsToDate(acum)), new Date(date + secondsToDate(acum + Number(data.duration[0]))), data.from[0]]);
             return acum + Number(data.duration[0]);
@@ -36,11 +39,13 @@ export default function gnome() {
         setInterval(changeBG, 1000);
     }
 
-    readFile(themePath + '.xml', (err, data) => {
-        parser.parseString(data, (err, result) => {
-            findRange(result);
-        });
-    });
+    try {
+        let file = await readFile(themePath + '.xml')
+        let result = await parseStringPromise(file)
+        findRange(result)
+    } catch (error) {
+        throw error
+    }
 
     async function changeBG() {
         pointArr.forEach(async (element) => {

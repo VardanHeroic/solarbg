@@ -3,37 +3,48 @@ import SunCalc from 'suncalc';
 import { setWallpaper } from 'wallpaper';
 import { platform } from 'os'
 
-export default function solar() {
-	let themeJSON = {}
-	let currentpath = null
+export default async function solar() {
+    let themeJSON = {}
+    let currentpath = null
     let location = argv.location.split(':')
 
-	import( (platform == 'win32' ? 'file:\\' : '') + themePath + (platform == 'win32' ? '\\theme.json' : '/theme.json') ,{ assert: { type: "json" } })
-		.then(module => themeJSON = module.default)
-	changeBG()
-	setInterval(changeBG,1000);
+    try {
+        let module = await import((platform == 'win32' ? 'file:\\' : '') + themePath + (platform == 'win32' ? '\\theme.json' : '/theme.json'), { assert: { type: "json" } })
+        themeJSON = module.default
+        await changeBG()
+        setInterval(changeBG, 1000);
 
-	async function changeBG() {
-		let solarTime = SunCalc.getTimes(new Date(), location[0], location[1])
-		let altitude = SunCalc.getPosition(new Date(),location[0],location[1]).altitude * (180/Math.PI)
-		let isAfterNoon = null
-		if (solarTime.solarNoon < new Date() )  {
-			isAfterNoon = true
-		}
-		else {
-			isAfterNoon = false
-		}
-		Object.keys(themeJSON).length && themeJSON.forEach(async element => {
-			let elementPath = themePath + '/' + element.path
-			if (currentpath !== elementPath && isAfterNoon === element.afternoon) {
-				if( (element.afternoon === true && element.start > altitude && altitude > element.end) || (element.afternoon === false && element.start < altitude && altitude < element.end)) {
-					currentpath = elementPath;
+    } catch (error) {
+        throw error
+    }
+
+
+    async function changeBG() {
+        let solarTime = SunCalc.getTimes(new Date(), location[0], location[1])
+        let altitude = SunCalc.getPosition(new Date(), location[0], location[1]).altitude * (180 / Math.PI)
+        let isAfterNoon = null
+        if (solarTime.solarNoon < new Date()) {
+            isAfterNoon = true
+        }
+        else {
+            isAfterNoon = false
+        }
+        themeJSON.forEach(timeStamp => {
+            if (Object.keys(timeStamp).sort().join() !== "end,path,start") {
+                throw new Error("file is not a solar theme")
+            }
+        })
+        Object.keys(themeJSON).length && themeJSON.forEach(async element => {
+            let elementPath = themePath + '/' + element.path
+            if (currentpath !== elementPath) {
+                if ((isAfterNoon && element.start > altitude && altitude > element.end) || (!isAfterNoon && element.start < altitude && altitude < element.end)) {
+                    currentpath = elementPath;
                     if (argv.verbose) {
                         console.log(currentpath, altitude);
                     }
-					await setWallpaper(themePath + '/' + element.path)
-				}
-			}
-		});
-	}
+                    await setWallpaper(themePath + '/' + element.path)
+                }
+            }
+        });
+    }
 }

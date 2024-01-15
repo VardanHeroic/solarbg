@@ -7,6 +7,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers'
 
 
+export let themePath;
 export let argv = yargs(hideBin(process.argv))
     .wrap(120)
     .option('verbose', {
@@ -34,8 +35,7 @@ export let argv = yargs(hideBin(process.argv))
         if (typeof argv.theme != 'string' || (typeof argv.location != 'string' && argv.location)) {
             throw new Error('theme and location arguments must be string');
         }
-        console.log(argv.location);
-        if (argv.location && (argv.location.split(':').filter(Boolean).length !== 2 || !argv.location.split(':').filter(Boolean).every(number => !isNaN(number) ) )) {
+        if (argv.location && (argv.location.split(':').filter(Boolean).length !== 2 || !argv.location.split(':').filter(Boolean).every(number => !isNaN(number)))) {
             throw new Error('location must be writed in LAT:LON format');
         }
         return true;
@@ -43,29 +43,28 @@ export let argv = yargs(hideBin(process.argv))
     .argv
 
 
-let ospath = '';
-export let themePath = '';
 
-switch (platform()) {
-    case 'linux':
-        ospath = '/.local/share/solarbg/themes/';
-        break;
-    case 'win32':
-        ospath = '\\AppData\\Roaming\\solarbg\\themes\\';
-        break;
-    default:
-        console.log('Your os is not supported');
+try {
+    switch (platform()) {
+        case 'linux':
+            themePath = homedir() + '/.local/share/solarbg/themes/' + argv.theme;
+            break;
+        case 'win32':
+            themePath = homedir() + '\\AppData\\Roaming\\solarbg\\themes\\' + argv.theme;
+            break;
+        default:
+            throw new Error('Your os is not supported')
+    }
+    switch (argv.mode) {
+        case 'gnome':
+            await gnome()
+            break;
+        case 'solar':
+            await solar()
+            break
+    }
 
 }
-
-if (ospath !== '') {
-    themePath = homedir() + ospath + argv.theme;
-
-    if (argv.mode === 'gnome') {
-        gnome();
-    }
-    if (argv.mode === 'solar') {
-        solar();
-    }
-
+catch (error) {
+    console.error("Error: " + error.message)
 }
