@@ -6,7 +6,7 @@ import gnome from './src/gnome.js';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers'
 
-
+let isLinux = platform() === 'linux'
 export let themePath;
 export let argv = yargs(hideBin(process.argv))
     .wrap(120)
@@ -15,20 +15,23 @@ export let argv = yargs(hideBin(process.argv))
     })
     .option('theme', {
         alias: 't',
-        describe: 'theme name(theme path is ~/.local/share/solarbg/themes)',
+        describe: 'theme folder name(theme path is ~/.local/share/solarbg/themes)',
         demandOption: true,
     })
     .option('mode', {
         alias: 'm',
         describe: 'wallpaper type(solar,gnome)',
-        choices: ['gnome', 'solar'],
-        demandOption: true,
+        choices: isLinux ? ['gnome', 'solar'] : null,
+        demandOption: isLinux,
+        hidden: !isLinux,
     })
     .option('location', {
         alias: 'l',
+        demandOption: !isLinux,
         describe: 'your location needed for solar mode(LAT:LON)',
     })
     .check(argv => {
+        argv.mode = isLinux ? argv.mode : 'solar'
         if (argv.mode === 'solar' && !argv.location) {
             throw new Error('location is required when mode has the value "solar"');
         }
