@@ -7,7 +7,7 @@ export default async function solar() {
     let themeJSON = {}
     let currentpath = null
     let location = argv.location.split(':')
-    let module = await import((platform == 'win32' ? 'file:\\' : '') + themePath + (platform == 'win32' ? '\\theme.json' : '/theme.json'), { assert: { type: "json" } })
+    let module = await import((platform == 'win32' ? 'file:\\' : '') + themePath + (platform == 'win32' ? '\\theme.json' : '/theme.json'), { with: { type: "json" } })
     themeJSON = module.default
 
     await changeBG()
