@@ -6,27 +6,33 @@ import gnome from './src/gnome.js';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers'
 
-let isLinux = platform() === 'linux'
-export let themePath;
-export let argv = yargs(hideBin(process.argv))
+const isLinux = platform() === 'linux'
+export let themePath:string;
+export const argv = yargs(hideBin(process.argv))
     .wrap(120)
     .option('verbose', {
+        type: 'boolean',
+        default: false,
         describe: 'enable verbose logging',
     })
     .option('theme', {
         alias: 't',
         describe: 'theme folder name(theme path is ~/.local/share/solarbg/themes)',
+        type: 'string',
         demandOption: true,
     })
     .option('mode', {
         alias: 'm',
         describe: 'wallpaper type(solar,gnome)',
-        choices: isLinux ? ['gnome', 'solar'] : null,
+        choices: isLinux ? ['gnome', 'solar'] : [],
+        type: 'string',
         demandOption: isLinux,
         hidden: !isLinux,
     })
     .option('location', {
         alias: 'l',
+        default: '',
+        type: 'string',
         demandOption: !isLinux,
         describe: 'your location needed for solar mode(LAT:LON)',
     })
@@ -38,14 +44,12 @@ export let argv = yargs(hideBin(process.argv))
         if (typeof argv.theme != 'string' || (typeof argv.location != 'string' && argv.location)) {
             throw new Error('theme and location arguments must be string');
         }
-        if (argv.location && (argv.location.split(':').filter(Boolean).length !== 2 || !argv.location.split(':').filter(Boolean).every(number => !isNaN(number)))) {
+        if (argv.location && (argv.location.split(':').filter(Boolean).length !== 2 || !argv.location.split(':').filter(Boolean).every((number:any) => !isNaN(number)))) {
             throw new Error('location must be writed in LAT:LON format');
         }
         return true;
     })
-    .argv
-
-
+    .parseSync()
 
 try {
     switch (platform()) {
@@ -60,14 +64,14 @@ try {
     }
     switch (argv.mode) {
         case 'gnome':
-            await gnome()
+            gnome()
             break;
         case 'solar':
-            await solar()
+            solar()
             break
     }
 
 }
-catch (error) {
+catch (error:any) {
     console.error("Error: " + error.message)
 }

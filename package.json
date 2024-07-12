@@ -1,25 +1,30 @@
 {
 	"name": "solarbg",
 	"version": "1.4.1",
-    "main": "index.js",
-    "license": "GPL-3.0" ,
-	"scripts": {
-
-	},
+	"main": "index.js",
+	"license": "GPL-3.0",
+	"scripts": {},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/VardanHeroic/solarbg.git"
 	},
-    "bin": {
-        "solarbg": "./index.js"
-    },
+	"bin": {
+		"solarbg": "./build/index.js"
+	},
 	"type": "module",
 	"dependencies": {
 		"moment": "^2.29.4",
 		"moment-range": "^4.0.2",
 		"suncalc": "^1.9.0",
-		"wallpaper": "^7.1.0",
+		"wallpaper": "git+https://github.com/VardanHeroic/wallpaper.git",
 		"xml2js": "^0.6.2",
 		"yargs": "^17.7.2"
+	},
+	"devDependencies": {
+		"@types/node": "^20.14.10",
+		"@types/suncalc": "^1.9.2",
+		"@types/xml2js": "^0.4.14",
+		"@types/yargs": "^17.0.32",
+		"typescript": "^5.5.3"
 	}
 }
