@@ -1,53 +1,73 @@
 import { readFile } from 'fs/promises';
 import { setWallpaper } from 'wallpaper';
-import { parseStringPromise } from 'xml2js';
+import { parseStringPromise, processors } from 'xml2js';
 import { themePath, argv } from '../index.js'
 
 export default async function gnome() {
-    const pointArr: any[] = [];
+    interface TimeStamp {
+        path: string;
+        start: Date;
+        end: Date;
+    }
+    interface StaticTimeStamp {
+        file: string;
+        duration: number;
+    }
+    interface TransitionTimeStamp {
+        duration: number
+        from: string
+        to: string
+    }
+    interface Theme {
+        background: {
+            starttime: {
+                hour: number;
+                minute: number;
+                second: number;
+            };
+            static: StaticTimeStamp[]
+            transition: TransitionTimeStamp[]
+        }
+    }
+
+    const pointArr: TimeStamp[] = [];
     const sysdate = new Date();
-    // sysdate.setHours(0, 0, 0, 0)
     let currentpath: string;
 
-    function addSecondsToDate(seconds: any): Object {
+    function addSecondsToDate(seconds: number): Date {
         const dateCopy = new Date(sysdate);
         dateCopy.setSeconds(sysdate.getSeconds() + seconds);
         return dateCopy;
     }
 
-    function findRange(xml: any) {
+    function findRange(xml: Theme) {
         if (!xml.background) {
             throw new Error("xml file is not a gnome theme")
         }
 
-        sysdate.setHours(0, 0, Number(xml.background.starttime[0].hour[0]) * 3600 + Number(xml.background.starttime[0].minute[0]) * 60 + Number(xml.background.starttime[0].second[0]), 0)
-        let timeArr = xml.background.transition.map((data:any) => {return {"duration":[Number(data.duration[0])], "file": data.from}} )
+        sysdate.setHours(0, 0, xml.background.starttime.hour * 3600 + xml.background.starttime.minute * 60 + xml.background.starttime.second, 0)
+        let timeArr: StaticTimeStamp[] = xml.background.transition.map((transitionTime: TransitionTimeStamp) => { return { "file": transitionTime.from, duration: transitionTime.duration } })
 
         if (xml.background.static) {
             timeArr = xml.background.static
-            timeArr.forEach((element: any) => {
-                element.duration[0] = Number(element.duration[0])
-            });
-            xml.background.transition.forEach((data: any) => {
-
-                timeArr.find((time: any) => time.file[0] === data.from[0]).duration[0] += Number(data.duration[0] / 2)
-                timeArr.find((time: any) => time.file[0] === data.to[0]).duration[0] += Number(data.duration[0] / 2)
+            xml.background.transition.forEach((transitionTime: TransitionTimeStamp) => {
+                timeArr[timeArr.findIndex(time => time.file === transitionTime.from)].duration += transitionTime.duration / 2
+                timeArr[timeArr.findIndex(time => time.file === transitionTime.to)].duration += transitionTime.duration / 2
             });
         }
 
-        timeArr.reduce((acum:number, data:any) => {
-                pointArr.push([addSecondsToDate(acum), addSecondsToDate(acum + Number(data.duration[0])), data.file[0]]);
-                return acum + Number(data.duration[0]);
-        },0)
+        timeArr.reduce((acum: number, time: StaticTimeStamp) => {
+            pointArr.push({ "start": addSecondsToDate(acum), "end": addSecondsToDate(acum + time.duration), "path": time.file });
+            return acum + time.duration
+        }, 0)
 
-        console.log(JSON.stringify(timeArr, null, 4), sysdate);
         changeBG();
         setInterval(changeBG, 1000);
     }
 
     try {
         const file = await readFile(themePath + '.xml')
-        const result = await parseStringPromise(file)
+        const result = await parseStringPromise(file, { explicitArray: false, valueProcessors: [processors.parseNumbers] })
         findRange(result)
     } catch (error) {
         throw error
@@ -57,11 +77,11 @@ export default async function gnome() {
         const date = new Date()
         pointArr.forEach(async (element) => {
             if (argv.verbose) {
-                console.log(element[0].toLocaleTimeString('en-US', { hour12: false }), ' ', date.toLocaleTimeString('en-US', { hour12: false }), ' ', element[1].toLocaleTimeString('en-US', { hour12: false }), ' ', element[2]);
+                console.log(element.start.toLocaleTimeString('en-US', { hour12: false }), ' ', date.toLocaleTimeString('en-US', { hour12: false }), ' ', element.end.toLocaleTimeString('en-US', { hour12: false }), ' ', element.path);
             }
-            if (element[0].getTime() < date.getTime() && date.getTime() < element[1].getTime() && currentpath != element[2]) {
-                currentpath = element[2];
-                await setWallpaper(element[2]);
+            if (element.start.getTime() < date.getTime() && date.getTime() < element.end.getTime() && currentpath != element.path) {
+                currentpath = element.path;
+                await setWallpaper(element.path);
             }
         });
     }

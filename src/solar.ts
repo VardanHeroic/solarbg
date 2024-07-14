@@ -4,12 +4,17 @@ import { setWallpaper } from 'wallpaper';
 import { platform } from 'os'
 
 export default async function solar() {
-    let themeJSON:any[] = []
+    interface TimeStamp{
+        path: string;
+        start: number;
+        end: number;
+    }
+
     let currentpath:string;
     const isWindows:boolean = platform() === 'win32'
-    const location = argv.location.split(':').map(string => Number(string))
+    const location = argv.location.split(':').map(string => +string)
     const module = await import((isWindows ? 'file:\\' : '') + themePath + (isWindows ? '\\theme.json' : '/theme.json'), { with: { type: "json" } })
-    themeJSON = module.default
+    const themeJSON:TimeStamp[] = module.default
 
     await changeBG()
     setInterval(changeBG, 1000);
@@ -23,12 +28,12 @@ export default async function solar() {
             throw new Error("file is not a solar theme")
         }
 
-        themeJSON.forEach((timeStamp: Object) => {
+        themeJSON.forEach((timeStamp) => {
             if (Object.keys(timeStamp).sort().join() !== "end,path,start") {
                 throw new Error("file is not a solar theme")
             }
         })
-        themeJSON.forEach(async (element:any) => {
+        themeJSON.forEach(async (element) => {
             const elementPath = themePath + '/' + element.path
             if (currentpath !== elementPath) {
                 if ((isAfterNoon && element.start > altitude && altitude > element.end) || (!isAfterNoon && element.start < altitude && altitude < element.end)) {
