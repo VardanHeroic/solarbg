@@ -30,33 +30,61 @@ export default async function gnome() {
         }
     }
 
+    function isStaticTimeStamp(obj: any): obj is StaticTimeStamp {
+        return typeof obj === 'object' &&
+            typeof obj.file === 'string' &&
+            typeof obj.duration === 'number';
+    }
+
+    function isTransitionTimeStamp(obj: any): obj is TransitionTimeStamp {
+        return typeof obj === 'object' &&
+            typeof obj.duration === 'number' &&
+            typeof obj.from === 'string' &&
+            typeof obj.to === 'string';
+    }
+
+    function isTheme(obj: any): obj is Theme {
+        return  obj !== null &&
+            typeof obj === 'object' &&
+            typeof obj.background === 'object' &&
+            typeof obj.background.starttime === 'object' &&
+            typeof obj.background.starttime.hour === 'number' &&
+            typeof obj.background.starttime.minute === 'number' &&
+            typeof obj.background.starttime.second === 'number' &&
+            Array.isArray(obj.background.static) &&
+            obj.background.static.every(isStaticTimeStamp) &&
+            Array.isArray(obj.background.transition) &&
+            obj.background.transition.every(isTransitionTimeStamp);
+    }
+
     const pointArr: TimeStamp[] = [];
     const sysdate = new Date();
     let currentpath: string;
 
-    function addSecondsToDate(seconds: number): Date {
-        const dateCopy = new Date(sysdate);
-        dateCopy.setSeconds(sysdate.getSeconds() + seconds);
-        return dateCopy;
+    try {
+        const file = await readFile(themePath + '.xml')
+        const result = await parseStringPromise(file, { explicitArray: false, valueProcessors: [processors.parseNumbers] })
+        if (!isTheme(result)) {
+            throw new Error("xml file is not a gnome theme")
+        }
+        findRange(result)
+    } catch (error) {
+        throw error
     }
 
     function findRange(xml: Theme) {
-        if (!xml.background) {
-            throw new Error("xml file is not a gnome theme")
-        }
-
         sysdate.setHours(0, 0, xml.background.starttime.hour * 3600 + xml.background.starttime.minute * 60 + xml.background.starttime.second, 0)
-        let timeArr: StaticTimeStamp[] = xml.background.transition.map((transitionTime: TransitionTimeStamp) => { return { "file": transitionTime.from, duration: transitionTime.duration } })
+        let timeArr: StaticTimeStamp[] = xml.background.transition.map(transitionTime => { return { "file": transitionTime.from, duration: transitionTime.duration } })
 
         if (xml.background.static) {
             timeArr = xml.background.static
-            xml.background.transition.forEach((transitionTime: TransitionTimeStamp) => {
+            xml.background.transition.forEach(transitionTime => {
                 timeArr[timeArr.findIndex(time => time.file === transitionTime.from)].duration += transitionTime.duration / 2
                 timeArr[timeArr.findIndex(time => time.file === transitionTime.to)].duration += transitionTime.duration / 2
             });
         }
 
-        timeArr.reduce((acum: number, time: StaticTimeStamp) => {
+        timeArr.reduce((acum: number, time) => {
             pointArr.push({ "start": addSecondsToDate(acum), "end": addSecondsToDate(acum + time.duration), "path": time.file });
             return acum + time.duration
         }, 0)
@@ -65,12 +93,10 @@ export default async function gnome() {
         setInterval(changeBG, 1000);
     }
 
-    try {
-        const file = await readFile(themePath + '.xml')
-        const result = await parseStringPromise(file, { explicitArray: false, valueProcessors: [processors.parseNumbers] })
-        findRange(result)
-    } catch (error) {
-        throw error
+    function addSecondsToDate(seconds: number): Date {
+        const dateCopy = new Date(sysdate);
+        dateCopy.setSeconds(sysdate.getSeconds() + seconds);
+        return dateCopy;
     }
 
     async function changeBG() {

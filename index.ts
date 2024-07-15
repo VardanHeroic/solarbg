@@ -44,8 +44,6 @@ export const argv = yargs(hideBin(process.argv))
         if (typeof argv.theme != 'string' || (typeof argv.location != 'string' && argv.location)) {
             throw new Error('theme and location arguments must be string');
         }
-        console.log(argv.location.split(':').filter(Boolean));
-
         if (argv.location && (argv.location.split(':').filter(Boolean).length !== 2 || !argv.location.split(':').filter(Boolean).every((cord:string) => +cord+1))) {
             throw new Error('location must be writed in LAT:LON format');
         }
@@ -66,10 +64,10 @@ try {
     }
     switch (argv.mode) {
         case 'gnome':
-            gnome()
+            await gnome()
             break;
         case 'solar':
-            solar()
+            await solar()
             break
     }
 
