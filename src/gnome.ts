@@ -9,15 +9,18 @@ export default async function gnome() {
         start: Date;
         end: Date;
     }
+
     interface StaticTimeStamp {
         file: string;
         duration: number;
     }
+
     interface TransitionTimeStamp {
         duration: number
         from: string
         to: string
     }
+
     interface Theme {
         background: {
             starttime: {
@@ -51,10 +54,12 @@ export default async function gnome() {
             typeof obj.background.starttime.hour === 'number' &&
             typeof obj.background.starttime.minute === 'number' &&
             typeof obj.background.starttime.second === 'number' &&
+            ((
             Array.isArray(obj.background.static) &&
-            obj.background.static.every(isStaticTimeStamp) &&
+            obj.background.static.every(isStaticTimeStamp) )|| (
             Array.isArray(obj.background.transition) &&
-            obj.background.transition.every(isTransitionTimeStamp);
+            obj.background.transition.every(isTransitionTimeStamp)
+            ))
     }
 
     const pointArr: TimeStamp[] = [];

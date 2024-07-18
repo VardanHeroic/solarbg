@@ -1,11 +1,13 @@
 #!/usr/bin/env -S node --no-warnings
 
+import process from 'process'
 import { homedir, platform } from 'os';
 import solar from './src/solar.js';
 import gnome from './src/gnome.js';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers'
 
+process.title = 'solarbg'
 const isLinux = platform() === 'linux'
 export let themePath:string;
 export const argv = yargs(hideBin(process.argv))
