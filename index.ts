@@ -7,7 +7,7 @@ import gnome from './src/gnome.js';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers'
 
-process.title = 'solarbg'
+process.title = 'solarbg ' + hideBin(process.argv).join(' ')
 const isLinux = platform() === 'linux'
 export let themePath:string;
 export const argv = yargs(hideBin(process.argv))
@@ -26,7 +26,7 @@ export const argv = yargs(hideBin(process.argv))
     .option('mode', {
         alias: 'm',
         describe: 'wallpaper type(solar,gnome)',
-        choices: isLinux ? ['gnome', 'solar'] : [],
+        ...(isLinux ? {choices: ['gnome', 'solar']} : {default: 'solar'}),
         type: 'string',
         demandOption: isLinux,
         hidden: !isLinux,
@@ -39,12 +39,8 @@ export const argv = yargs(hideBin(process.argv))
         describe: 'your location needed for solar mode(LAT:LON)',
     })
     .check(argv => {
-        argv.mode = isLinux ? argv.mode : 'solar'
         if (argv.mode === 'solar' && !argv.location) {
-            throw new Error('location is required when mode has the value "solar"');
-        }
-        if (typeof argv.theme != 'string' || (typeof argv.location != 'string' && argv.location)) {
-            throw new Error('theme and location arguments must be string');
+            throw new Error('location is required for solar themes');
         }
         if (argv.location && (argv.location.split(':').filter(Boolean).length !== 2 || !argv.location.split(':').filter(Boolean).every((cord:string) => +cord+1))) {
             throw new Error('location must be writed in LAT:LON format');
