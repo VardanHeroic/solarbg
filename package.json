@@ -3,7 +3,10 @@
 	"version": "2.0.0",
 	"main": "./build/index.js",
 	"license": "GPL-3.0",
-	"scripts": {},
+    "author": {
+        "name":"Vardan Tarayan",
+        "email":"tarayanvardan@gmail.com"
+    },
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/VardanHeroic/solarbg.git"
@@ -11,6 +14,26 @@
 	"bin": {
 		"solarbg": "./build/index.js"
 	},
+    "keywords": [
+		"linux",
+		"windows",
+		"wallpaper",
+		"desktop",
+		"background",
+		"image",
+		"picture",
+		"photo",
+        "sun",
+        "sunrise",
+        "sunset",
+        "twilight",
+        "solar"
+	],
+	"engines": {
+		"node": ">=17.1"
+	},
+    "os": ["win32","linux"],
+    "files": ["build/"],
 	"type": "module",
 	"dependencies": {
 		"suncalc": "^1.9.0",
